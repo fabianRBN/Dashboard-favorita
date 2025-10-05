@@ -1,40 +1,362 @@
 ---
-import { asset, url } from '../lib/data.js';
+/* Resumen con botón "APROBAR Informe" */
 ---
 
-<div
-	class="flex flex-col justify-center items-center px-6 mx-auto h-screen xl:px-0 dark:bg-gray-900"
->
-	<div class="block md:max-w-lg">
-		<img src={asset('images/illustrations/404.svg')} alt="astronaut image" />
-	</div>
-	<div class="text-center xl:max-w-4xl">
-		<h1
-			class="mb-3 text-2xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl dark:text-white"
-		>
-			Page not found
-		</h1>
-		<p
-			class="mb-5 text-base font-normal text-gray-500 md:text-lg dark:text-gray-400"
-		>
-			Oops! Looks like you followed a bad link. If you think this is a problem
-			with us, please tell us.
-		</p>
-		<a
-			href={url('')}
-			class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-3 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-		>
-			<svg
-				class="mr-2 -ml-1 w-5 h-5"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				xmlns="http://www.w3.org/2000/svg"
-				><path
-					fill-rule="evenodd"
-					d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-					clip-rule="evenodd"></path></svg
-			>
-			Go back home
-		</a>
-	</div>
+<div class="grid grid-cols-1 px-4 pt-6 xl:grid-cols-3 xl:gap-4 dark:bg-gray-900">
+  <div class="mb-4 col-span-full xl:mb-2 flex items-center justify-between">
+    <h1 class="text-xl font-semibold text-white sm:text-2xl">Reporte del proyecto — Resumen</h1>
+    <span id="status-pill" class="inline-flex items-center gap-2 rounded-full border border-amber-600/50 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
+      <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/></svg>
+      Pendiente
+    </span>
+  </div>
+
+  <!-- Lateral -->
+  <aside class="col-span-full xl:col-auto space-y-4">
+    <section class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+      <h3 class="mb-4 text-xl font-semibold text-white">Ejes & Impacto</h3>
+      <dl class="divide-y divide-gray-700">
+        <div class="py-3 grid grid-cols-3 gap-2">
+          <dt class="text-sm text-gray-400">Eje principal</dt>
+          <dd id="ejekey" class="text-sm text-gray-100 col-span-2">—</dd>
+        </div>
+        <div class="py-3 grid grid-cols-3 gap-2">
+          <dt class="text-sm text-gray-400">Impacto a medir</dt>
+          <dd id="impactokey" class="text-sm text-gray-100 col-span-2">—</dd>
+        </div>
+        <div class="py-3 grid grid-cols-3 gap-2">
+          <dt class="text-sm text-gray-400">Evidencias (general)</dt>
+          <dd class="text-sm col-span-2">
+            <a id="driveLink" href="#" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300 underline">Sin enlace</a>
+          </dd>
+        </div>
+      </dl>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button id="btn-approve" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8.25 8.25a1 1 0 01-1.414 0L3.293 11.5a1 1 0 111.414-1.414l3.04 3.04 7.543-7.543a1 1 0 011.417.01z" clip-rule="evenodd"/></svg>
+          APROBAR Informe
+        </button>
+        <button id="btn-export" class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500">Exportar JSON</button>
+        <button id="btn-print" class="rounded-lg border border-gray-600 px-3 py-2 text-sm font-medium text-gray-200 hover:bg-gray-700">Imprimir / PDF</button>
+      </div>
+      <p id="approved-meta" class="mt-2 hidden text-xs text-gray-400"></p>
+    </section>
+
+    <section class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+      <h3 class="mb-2 text-lg font-semibold text-white">Indicadores definidos</h3>
+      <ul id="indicadores-def" class="list-disc pl-5 space-y-1 text-sm text-gray-200"></ul>
+      <p id="indicadores-def-empty" class="text-gray-400 text-sm hidden">Aún no has definido indicadores.</p>
+    </section>
+  </aside>
+
+  <!-- Principal -->
+  <main class="col-span-2 space-y-4">
+    <!-- KPIs -->
+    <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-lg border border-gray-700 bg-gray-800 p-4">
+        <p class="text-xs text-gray-400">Último periodo</p>
+        <h4 id="kpi-periodo" class="mt-1 text-xl font-semibold text-white">—</h4>
+      </div>
+      <div class="rounded-lg border border-gray-700 bg-gray-800 p-4">
+        <p class="text-xs text-gray-400">% Aportación</p>
+        <h4 id="kpi-aportacion" class="mt-1 text-2xl font-semibold text-white">—</h4>
+      </div>
+      <div class="rounded-lg border border-gray-700 bg-gray-800 p-4">
+        <p class="text-xs text-gray-400">Permanencia escolar</p>
+        <h4 id="kpi-permanencia" class="mt-1 text-2xl font-semibold text-white">—</h4>
+      </div>
+      <div class="rounded-lg border border-gray-700 bg-gray-800 p-4">
+        <p class="text-xs text-gray-400">Mujeres vulnerables apoyadas</p>
+        <h4 id="kpi-mujeres" class="mt-1 text-2xl font-semibold text-white">—</h4>
+      </div>
+    </section>
+
+    <!-- Serie por periodo -->
+    <section class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-semibold text-white">Serie por periodo</h3>
+        <span id="rows-count" class="text-xs text-gray-400"></span>
+      </div>
+      <div class="overflow-x-auto rounded-lg ring-1 ring-gray-700">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-900 text-left text-gray-300">
+            <tr>
+              <th class="p-3">Mes / Periodo</th>
+              <th class="p-3">% Aportación</th>
+              <th class="p-3">Meta 2025</th>
+              <th class="p-3">Permanencia (%)</th>
+              <th class="p-3">Profesores (#)</th>
+              <th class="p-3">Estudiantes (#)</th>
+              <th class="p-3">Total prof./padres/vul. (#)</th>
+              <th class="p-3">Mujeres vul. (#)</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-ind" class="divide-y divide-gray-700 bg-gray-800"></tbody>
+        </table>
+      </div>
+      <p id="tabla-empty" class="mt-2 text-sm text-gray-400 hidden">No hay datos de periodos aún.</p>
+    </section>
+
+    <!-- Evidencias por mes -->
+    <section class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+      <h3 class="mb-3 text-lg font-semibold text-white">Evidencias por mes</h3>
+      <div class="overflow-x-auto rounded-lg ring-1 ring-gray-700">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-900 text-left text-gray-300">
+            <tr>
+              <th class="p-3">Mes / Periodo</th>
+              <th class="p-3">Hitos del mes (resumen)</th>
+              <th class="p-3">Link</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-evid" class="divide-y divide-gray-700 bg-gray-800"></tbody>
+        </table>
+      </div>
+      <p id="evid-empty" class="mt-2 text-sm text-gray-400 hidden">Sin evidencias registradas.</p>
+    </section>
+
+    <!-- Hitos (lista general) -->
+    <section class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+      <h3 class="mb-3 text-lg font-semibold text-white">Hitos del proyecto</h3>
+      <ul id="hitos" class="space-y-2"></ul>
+      <p id="hitos-empty" class="text-sm text-gray-400 hidden">Aún no has registrado hitos.</p>
+    </section>
+  </main>
 </div>
+
+<script type="module">
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      // ---------- Seed de ejemplo si no hay datos ----------
+      if (!localStorage.getItem('indicadoresData')) {
+        const SERIE = [
+          {periodo:'ENERO', aportacion:1, meta2025:'', permanencia:'0%', profCap:0, estCap:0, totalVul:0, mujVul:0, evidencias:'https://drive.google.com/drive/folders/1LWqQyPzvyoR-C1ZSm1BxX5QtnDfEsKYD?usp=drive_link', hitos:''},
+          {periodo:'FEBRERO', aportacion:1, meta2025:'', permanencia:'0%', profCap:0, estCap:0, totalVul:0, mujVul:0, evidencias:'', hitos:''},
+          {periodo:'MARZO', aportacion:1, meta2025:'', permanencia:'0%', profCap:0, estCap:0, totalVul:0, mujVul:0, evidencias:'', hitos:''},
+          {periodo:'ABRIL', aportacion:1, meta2025:'', permanencia:'0%', profCap:0, estCap:0, totalVul:0, mujVul:0, evidencias:'', hitos:''},
+          {periodo:'MAYO', aportacion:1, meta2025:'', permanencia:'0%', profCap:0, estCap:0, totalVul:0, mujVul:0, evidencias:'', hitos:''},
+          {periodo:'JUNIO', aportacion:1, meta2025:'', permanencia:'0%', profCap:0, estCap:0, totalVul:0, mujVul:0, evidencias:'', hitos:''},
+          {periodo:'JULIO', aportacion:1, meta2025:'', permanencia:'93%', profCap:6, estCap:14, totalVul:20, mujVul:14,
+            hitos:`1) Scratch: videojuego de laberinto.
+2) Pensamiento crítico: administración de presupuesto.
+3) Programación: calculadora básica en Python.`,
+            evidencias:`https://www.instagram.com/girlsintech_ec/
+https://www.instagram.com/p/CuNj4pdMIQd/
+https://ecuador.girlsintech.org/techgodmother-primera-generacion/`},
+          {periodo:'AGOSTO', aportacion:1, meta2025:'', permanencia:'93%', profCap:3, estCap:14, totalVul:17, mujVul:14,
+            hitos:`1) Scratch: creación de videojuego.
+2) Robot seguidor de línea (sensores).
+3) Design thinking: reto con lluvia de ideas.`, evidencias:''},
+          {periodo:'SEPTIEMBRE', aportacion:1, meta2025:'', permanencia:'93%', profCap:3, estCap:14, totalVul:17, mujVul:14,
+            hitos:`1) Torre de fideos (8 min).
+2) Trabajo colaborativo: armado de robot.
+3) Demo Day: robótica, innovación, DT.`, evidencias:'https://www.instagram.com/p/CxY1wy3Rarz/'},
+          {periodo:'OCTUBRE', aportacion:1, meta2025:'', permanencia:'90%', profCap:3, estCap:19, totalVul:22, mujVul:19,
+            hitos:`1) Prototipado del videojuego.
+2) Habilidades blandas: competencias personales.
+3) Demo Day: pitch videojuego Scratch.`, evidencias:'https://drive.google.com/drive/folders/1JSXy1SX7jnOPv0nZxA98NxTaxLLJ3yGv?usp=drive_link'},
+          {periodo:'OCTUBRE G3', aportacion:'', meta2025:'', permanencia:'100%', profCap:7, estCap:14, totalVul:'', mujVul:14,
+            hitos:`1) Proyecto reciclable con botellas.
+2) Scratch básico.
+3) Plastinicircuitos.`, evidencias:'https://drive.google.com/drive/folders/1qRhdpvU4IGS18jpElLVtchlQnUDvTSM0'},
+          {periodo:'NOVIEMBRE', aportacion:1, meta2025:'', permanencia:'100%', profCap:3, estCap:14, totalVul:17, mujVul:14,
+            hitos:`1) Prototipado: conceptos y fases.
+2) Gestión de emociones.
+3) Demo Day: reciclaje / plastinicircuitos / Scratch Jr.`, evidencias:'https://drive.google.com/drive/folders/18ssqXoyYlxOD3dNXCfXlA8wFlDX_dqLy'},
+          {periodo:'NOVIEMBRE G4', aportacion:'', meta2025:'', permanencia:'71%', profCap:5, estCap:13, totalVul:'', mujVul:13,
+            hitos:`1) Innovación: “Innovando un objeto tecnológico”.
+2) Canva: invitaciones.
+3) Scratch: historia y juego.`, evidencias:'https://drive.google.com/drive/folders/1xUdUtChRlsdO6mR6qbasDTAe70N9O5Tg'},
+          {periodo:'DICIEMBRE', aportacion:1, meta2025:'', permanencia:'71%', profCap:4, estCap:13, totalVul:17, mujVul:13,
+            hitos:`1) Prototipado: proceso completo.
+2) Desarrollo tecnológico: juego en acción.
+3) Demo Day: lógica, Canva, Scratch.`, evidencias:'https://drive.google.com/drive/folders/1vAdvqyYFSue1v-HPPUizUy3V7eMMC0dC'},
+          {periodo:'ENERO (sig.)', aportacion:'', meta2025:'', permanencia:'80%', profCap:8, estCap:14, totalVul:22, mujVul:14,
+            hitos:`1) Bosquejo de app.
+2) Diseños en Canva.
+3) Videojuego en Scratch.`, evidencias:''},
+          {periodo:'MARZO (sig.)', aportacion:'', meta2025:'70%', permanencia:'70%', profCap:5, estCap:21, totalVul:'', mujVul:21,
+            hitos:`1) Videojuego en Scratch.
+2) Plastinicircuitos grupales.
+3) Canva para Demo Day.`, evidencias:'https://drive.google.com/drive/u/0/folders/13tFKHHGJmvAkJvqUdQS0C_lu0VfQtzWB'},
+          {periodo:'ABRIL (sig.)', aportacion:'', meta2025:'100%', permanencia:'100%', profCap:6, estCap:31, totalVul:'', mujVul:31,
+            hitos:`1) Historia de videojuego.
+2) Figuras eléctricas (plastilina).
+3) Invitaciones y presentaciones.`, evidencias:'https://drive.google.com/drive/u/0/folders/1sFHz4ipQI0OdQeI22EV6d_ZNSCR0bWXh'},
+          {periodo:'ABRIL VESPERTINO', aportacion:'', meta2025:'90%', permanencia:'90%', profCap:3, estCap:27, totalVul:'', mujVul:27,
+            hitos:`1) Scratch y programación.
+2) Figuras eléctricas y circuitos.
+3) Presentaciones e invitaciones.
+4) Trabajo en equipo.`, evidencias:'https://drive.google.com/drive/u/0/folders/1sFHz4ipQI0OdQeI22EV6d_ZNSCR0bWXh'}
+        ];
+        localStorage.setItem('indicadoresData', JSON.stringify(SERIE));
+      }
+      if (!localStorage.getItem('form_indicadores')) {
+        localStorage.setItem('form_indicadores', JSON.stringify([
+          { nombre: 'Porcentaje de permanencia Escolar', unidad: '%' },
+          { nombre: 'Profesores con capacitaciones puntuales', unidad: '#' },
+          { nombre: 'Estudiantes con capacitaciones puntuales', unidad: '#' },
+          { nombre: 'Total de Profesores / padres / personas vulnerables con capacitaciones puntuales', unidad: '#' },
+          { nombre: 'Mujeres vulnerables apoyadas', unidad: '#' },
+          { nombre: '% de aportación', unidad: '%' },
+          { nombre: 'Meta planteada al 2025', unidad: '%' }
+        ]));
+      }
+      if (!localStorage.getItem('form_hitos')) {
+        localStorage.setItem('form_hitos', JSON.stringify([
+          { fecha: '', desc: 'Metodología con Demo Day: cada niña explica lo aprendido.' },
+          { fecha: '', desc: 'Lógico-matemática con Scratch (programación).' },
+          { fecha: '', desc: 'Huella digital y ciberseguridad (taller a mamás).' },
+          { fecha: '', desc: 'Creatividad y vocación: Canva, Scratch, profesiones del futuro.' }
+        ]));
+      }
+      if (!localStorage.getItem('form_drive')) localStorage.setItem('form_drive', 'https://drive.google.com/drive/');
+      if (!localStorage.getItem('eje'))       localStorage.setItem('eje', 'Educación');
+      if (!localStorage.getItem('impacto'))   localStorage.setItem('impacto', 'Habilidades duras maestros');
+
+      // ---------- Utils ----------
+      const $ = (id) => document.getElementById(id);
+      const fmt = (v) => (v === null || v === undefined || v === '' ? '—' : v);
+
+      // ---------- Aprobación: estado inicial ----------
+      function setApprovedUI(approved, ts) {
+        const pill = $('status-pill');
+        const meta = $('approved-meta');
+        const btn  = $('btn-approve');
+
+        if (approved) {
+          pill.className = 'inline-flex items-center gap-2 rounded-full border border-emerald-600/50 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300';
+          pill.innerHTML = `<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8.25 8.25a1 1 0 01-1.414 0L3.293 11.5a1 1 0 111.414-1.414l3.04 3.04 7.543-7.543a1 1 0 011.417.01z" clip-rule="evenodd"/></svg>Aprobado`;
+          btn.disabled = true;
+          btn.classList.remove('bg-emerald-600','hover:bg-emerald-500');
+          btn.classList.add('bg-emerald-700','opacity-70','cursor-not-allowed');
+          btn.innerHTML = `<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8.25 8.25a1 1 0 01-1.414 0L3.293 11.5a1 1 0 111.414-1.414l3.04 3.04 7.543-7.543a1 1 0 011.417.01z" clip-rule="evenodd"/></svg> Aprobado`;
+          meta.classList.remove('hidden');
+          const d = ts ? new Date(ts) : new Date();
+          meta.textContent = `Aprobado el ${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+        } else {
+          pill.className = 'inline-flex items-center gap-2 rounded-full border border-amber-600/50 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300';
+          pill.innerHTML = `<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/></svg>Pendiente`;
+          meta.classList.add('hidden');
+          btn.disabled = false;
+          btn.classList.remove('bg-emerald-700','opacity-70','cursor-not-allowed');
+          btn.classList.add('bg-emerald-600');
+          btn.innerHTML = `<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8.25 8.25a1 1 0 01-1.414 0L3.293 11.5a1 1 0 111.414-1.414l3.04 3.04 7.543-7.543a1 1 0 011.417.01z" clip-rule="evenodd"/></svg> APROBAR Informe`;
+        }
+      }
+
+      const approval = JSON.parse(localStorage.getItem('report_approval') || 'null');
+      if (approval?.approved) {
+        setApprovedUI(true, approval.approved_at);
+      } else {
+        setApprovedUI(false);
+      }
+
+      $('btn-approve').addEventListener('click', () => {
+        const ok = confirm('¿Confirmas aprobar el informe? Esta acción marcará el reporte como Aprobado.');
+        if (!ok) return;
+        const now = new Date().toISOString();
+        localStorage.setItem('report_approval', JSON.stringify({ approved: true, approved_at: now }));
+        setApprovedUI(true, now);
+        // Pequeña notificación
+        alert('Informe aprobado ✅');
+      });
+
+      // ---------- Pintar Eje/Impacto/Drive ----------
+      $('ejekey').textContent = localStorage.getItem('eje') || '—';
+      $('impactokey').textContent = localStorage.getItem('impacto') || '—';
+      const link = localStorage.getItem('form_drive') || '';
+      const a = $('driveLink');
+      if (link) { a.href = link; a.textContent = 'Abrir carpeta/archivo'; } else { a.href = '#'; a.textContent = 'Sin enlace'; }
+
+      // ---------- Definiciones ----------
+      const defs = JSON.parse(localStorage.getItem('form_indicadores') || '[]');
+      const ul = $('indicadores-def'); const emptyDefs = $('indicadores-def-empty');
+      ul.innerHTML = '';
+      if (!defs.length) { emptyDefs.classList.remove('hidden'); }
+      else {
+        emptyDefs.classList.add('hidden');
+        defs.forEach(d => {
+          const li = document.createElement('li');
+          li.textContent = `${d.nombre}${d.unidad ? ' ('+d.unidad+')' : ''}`;
+          ul.appendChild(li);
+        });
+      }
+
+      // ---------- Serie + KPIs + Evidencias ----------
+      const rows = JSON.parse(localStorage.getItem('indicadoresData') || '[]');
+      const tbody = $('tbody-ind');
+      const evid = $('tbody-evid');
+      const emptyTable = $('tabla-empty');
+      const emptyEvid = $('evid-empty');
+      const countLbl = $('rows-count');
+      tbody.innerHTML = ''; evid.innerHTML = '';
+
+      if (!rows.length) {
+        emptyTable.classList.remove('hidden');
+        emptyEvid.classList.remove('hidden');
+        countLbl.textContent = '';
+      } else {
+        emptyTable.classList.add('hidden');
+        emptyEvid.classList.add('hidden');
+        countLbl.textContent = `${rows.length} periodo(s)`;
+
+        rows.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.className = 'text-gray-100';
+          tr.innerHTML = `
+            <td class="p-3">${fmt(r.periodo)}</td>
+            <td class="p-3">${fmt(r.aportacion)}</td>
+            <td class="p-3">${fmt(r.meta2025)}</td>
+            <td class="p-3">${fmt(r.permanencia)}</td>
+            <td class="p-3">${fmt(r.profCap)}</td>
+            <td class="p-3">${fmt(r.estCap)}</td>
+            <td class="p-3">${fmt(r.totalVul)}</td>
+            <td class="p-3">${fmt(r.mujVul)}</td>
+          `;
+          tbody.appendChild(tr);
+
+          const trE = document.createElement('tr');
+          trE.className = 'text-gray-100';
+          const resumen = (r.hitos || '').split('\n').filter(Boolean).slice(0,3).join(' ');
+          const linkHtml = r.evidencias ? `<a href="${r.evidencias}" target="_blank" rel="noopener" class="text-emerald-400 underline hover:text-emerald-300">Abrir</a>` : '—';
+          trE.innerHTML = `
+            <td class="p-3 align-top">${fmt(r.periodo)}</td>
+            <td class="p-3 whitespace-pre-line">${fmt(resumen)}</td>
+            <td class="p-3">${linkHtml}</td>
+          `;
+          evid.appendChild(trE);
+        });
+
+        const last = rows[rows.length - 1] || {};
+        $('kpi-periodo').textContent = fmt(last.periodo);
+        $('kpi-permanencia').textContent = last.permanencia ? `${last.permanencia}` : '—';
+        $('kpi-aportacion').textContent = last.aportacion ? `${last.aportacion}${String(last.aportacion).toString().includes('%') ? '' : '%'}` : '—';
+        const sum = (k)=> rows.reduce((a,r)=> a + (Number(r[k])||0), 0);
+        $('kpi-mujeres').textContent = sum('mujVul') || '—';
+      }
+
+      // ---------- Export / Print ----------
+      $('btn-export').addEventListener('click', () => {
+        const payload = {
+          eje: localStorage.getItem('eje') || null,
+          impacto: localStorage.getItem('impacto') || null,
+          evidencias_general: localStorage.getItem('form_drive') || null,
+          indicadores_def: JSON.parse(localStorage.getItem('form_indicadores') || '[]'),
+          indicadores_series: JSON.parse(localStorage.getItem('indicadoresData') || '[]'),
+          hitos: JSON.parse(localStorage.getItem('form_hitos') || '[]'),
+          approval: JSON.parse(localStorage.getItem('report_approval') || 'null'),
+          exportado_en: new Date().toISOString(),
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = Object.assign(document.createElement('a'), {href:url, download:'reporte_proyecto.json'});
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      });
+      $('btn-print').addEventListener('click', () => window.print());
+    } catch (err) {
+      console.error('Resumen error:', err);
+      alert('Ocurrió un error al renderizar el resumen. Revisa la consola del navegador.');
+    }
+  });
+</script>

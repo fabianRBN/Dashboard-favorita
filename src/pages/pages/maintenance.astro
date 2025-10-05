@@ -1,9 +1,10 @@
 ---
+import LayoutSidebar from '../../app/LayoutSidebar.astro';
 import LayoutStacked from '../../app/LayoutStacked.astro';
 import ErrorMaintenance from '../../modules/ErrorMaintenance.astro';
 ---
 
-<LayoutStacked>
+<LayoutSidebar>
 <section class="chat-container" style="width: 100%; max-width: 600px; margin: auto;    ">
   <h2>Chat con n8n</h2>
   <iframe 
@@ -12,4 +13,4 @@ import ErrorMaintenance from '../../modules/ErrorMaintenance.astro';
     title="n8n Chat"
   ></iframe>
 </section>
-</LayoutStacked>
+</LayoutSidebar>
