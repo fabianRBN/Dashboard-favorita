@@ -29,11 +29,9 @@
 	],
 	"type": "module",
 	"scripts": {
-		"astro": "astro",
-		"build": "astro build",
 		"dev": "astro dev",
-		"preview": "astro preview",
-		"start": "astro dev"
+		"build": "astro build",
+		"preview": "astro preview"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^1.1.0",
